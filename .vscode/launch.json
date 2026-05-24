@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Microsoft cloud sandbox",
+            "request": "launch",
+            "type": "al",
+            "environmentType": "Sandbox",
+            "environmentName": "Sandbox01042026",
+            "tenant": "cca4a8c2-eae4-499a-8df8-304cc825c6bd",
+            "server": "https://businesscentral.dynamics.com",
+            "startupObjectId": 22,
+            "startupObjectType": "Page",
+            "startupCompany": "TRUMART ECOM PRIVATE LIMITED",
+            "breakOnError": "All",
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "ForceSync"
+        }
+    ]
+}

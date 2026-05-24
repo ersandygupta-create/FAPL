@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DataSource">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+      <rd:SecurityType>None</rd:SecurityType>
+    </DataSource>
+  </DataSources>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <Height>2in</Height>
+        <Style />
+      </Body>
+      <Width>6.5in</Width>
+      <Page>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <Code>Public Function BlankZero(ByVal Value As Decimal)
+    if Value = 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankPos(ByVal Value As Decimal)
+    if Value &gt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankZeroAndPos(ByVal Value As Decimal)
+    if Value &gt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNeg(ByVal Value As Decimal)
+    if Value &lt; 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+
+Public Function BlankNegAndZero(ByVal Value As Decimal)
+    if Value &lt;= 0 then
+        Return ""
+    end if
+    Return Value
+End Function
+</Code>
+  <Language>=User!Language</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>0eeb6585-38ae-40f1-885b-8d50088d51b4</rd:ReportID>
+  <DataSets>
+    <DataSet Name="DataSet_Result">
+      <Fields>
+        <Field Name="VoucherSourceDesc">
+          <DataField>VoucherSourceDesc</DataField>
+        </Field>
+        <Field Name="DocumentNo_GLEntry">
+          <DataField>DocumentNo_GLEntry</DataField>
+        </Field>
+        <Field Name="PostingDateFormatted">
+          <DataField>PostingDateFormatted</DataField>
+        </Field>
+        <Field Name="CompanyInformationAddress">
+          <DataField>CompanyInformationAddress</DataField>
+        </Field>
+        <Field Name="CompanyInformationName">
+          <DataField>CompanyInformationName</DataField>
+        </Field>
+        <Field Name="CreditAmount_GLEntry">
+          <DataField>CreditAmount_GLEntry</DataField>
+        </Field>
+        <Field Name="CreditAmount_GLEntryFormat">
+          <DataField>CreditAmount_GLEntryFormat</DataField>
+        </Field>
+        <Field Name="DebitAmount_GLEntry">
+          <DataField>DebitAmount_GLEntry</DataField>
+        </Field>
+        <Field Name="DebitAmount_GLEntryFormat">
+          <DataField>DebitAmount_GLEntryFormat</DataField>
+        </Field>
+        <Field Name="DrText">
+          <DataField>DrText</DataField>
+        </Field>
+        <Field Name="GLAccName">
+          <DataField>GLAccName</DataField>
+        </Field>
+        <Field Name="CrText">
+          <DataField>CrText</DataField>
+        </Field>
+        <Field Name="DebitAmountTotal">
+          <DataField>DebitAmountTotal</DataField>
+        </Field>
+        <Field Name="DebitAmountTotalFormat">
+          <DataField>DebitAmountTotalFormat</DataField>
+        </Field>
+        <Field Name="CreditAmountTotal">
+          <DataField>CreditAmountTotal</DataField>
+        </Field>
+        <Field Name="CreditAmountTotalFormat">
+          <DataField>CreditAmountTotalFormat</DataField>
+        </Field>
+        <Field Name="ChequeDetail">
+          <DataField>ChequeDetail</DataField>
+        </Field>
+        <Field Name="ChequeNo">
+          <DataField>ChequeNo</DataField>
+        </Field>
+        <Field Name="ChequeDate">
+          <DataField>ChequeDate</DataField>
+        </Field>
+        <Field Name="RsNumberText1NumberText2">
+          <DataField>RsNumberText1NumberText2</DataField>
+        </Field>
+        <Field Name="EntryNo_GLEntry">
+          <DataField>EntryNo_GLEntry</DataField>
+        </Field>
+        <Field Name="PostingDate_GLEntry">
+          <DataField>PostingDate_GLEntry</DataField>
+        </Field>
+        <Field Name="TransactionNo_GLEntry">
+          <DataField>TransactionNo_GLEntry</DataField>
+        </Field>
+        <Field Name="VoucherNoCaption">
+          <DataField>VoucherNoCaption</DataField>
+        </Field>
+        <Field Name="CreditAmountCaption">
+          <DataField>CreditAmountCaption</DataField>
+        </Field>
+        <Field Name="DebitAmountCaption">
+          <DataField>DebitAmountCaption</DataField>
+        </Field>
+        <Field Name="ParticularsCaption">
+          <DataField>ParticularsCaption</DataField>
+        </Field>
+        <Field Name="AmountInWordsCaption">
+          <DataField>AmountInWordsCaption</DataField>
+        </Field>
+        <Field Name="PreparedByCaption">
+          <DataField>PreparedByCaption</DataField>
+        </Field>
+        <Field Name="CheckedByCaption">
+          <DataField>CheckedByCaption</DataField>
+        </Field>
+        <Field Name="ApprovedByCaption">
+          <DataField>ApprovedByCaption</DataField>
+        </Field>
+        <Field Name="Narration_LineNarration">
+          <DataField>Narration_LineNarration</DataField>
+        </Field>
+        <Field Name="PrintLineNarration">
+          <DataField>PrintLineNarration</DataField>
+        </Field>
+        <Field Name="IntegerOccurcesCaption">
+          <DataField>IntegerOccurcesCaption</DataField>
+        </Field>
+        <Field Name="Narration_PostedNarration1">
+          <DataField>Narration_PostedNarration1</DataField>
+        </Field>
+        <Field Name="NarrationCaption">
+          <DataField>NarrationCaption</DataField>
+        </Field>
+        <Field Name="NarrationNew">
+          <DataField>NarrationNew</DataField>
+        </Field>
+        <Field Name="Description">
+          <DataField>Description</DataField>
+        </Field>
+        <Field Name="AccountCode">
+          <DataField>AccountCode</DataField>
+        </Field>
+        <Field Name="EmpName">
+          <DataField>EmpName</DataField>
+        </Field>
+        <Field Name="ReportCaption">
+          <DataField>ReportCaption</DataField>
+        </Field>
+        <Field Name="ExternalDocNo">
+          <DataField>ExternalDocNo</DataField>
+        </Field>
+        <Field Name="ExtDocumentDate">
+          <DataField>ExtDocumentDate</DataField>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DataSource</DataSourceName>
+        <CommandText />
+      </Query>
+    </DataSet>
+  </DataSets>
+</Report>

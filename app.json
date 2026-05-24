@@ -1,0 +1,94 @@
+{
+  "id": "17915ad6-007f-47e3-a622-bdc71c467476",
+  "name": "FAPL Customization",
+  "publisher": "Krizzan",
+  "version": "1.0.0.68",
+  "brief": "Per Tenant Extension",
+  "description": "Per Tenant Extension",
+  "privacyStatement": "https://www.krizzanconsulting.com/",
+  "EULA": "https://www.krizzanconsulting.com/",
+  "help": "https://www.krizzanconsulting.com/",
+  "url": "https://www.krizzanconsulting.com/",
+  "logo": "logo/Krizzan.jpg",
+  "dependencies": [
+
+    {
+      "id": "db643212-b7fb-4dd4-b5a8-cb44ac714461",
+      "name": "India GST",
+      "publisher": "Microsoft",
+      "version": "25.1.25873.25976"
+  },
+  {
+      "id": "D3C551DD-5903-4194-B153-04CED9D29A2C",
+      "name": "India Tax Base",
+      "publisher": "Microsoft",
+      "version": "24.3.21374.22624"
+  },
+  {
+      "id": "7106d701-c601-4a5f-97c2-b8b323ae2c18",
+      "name": "QR Generator",
+      "version": "1.0.0.0",
+      "publisher": "Microsoft"
+  },
+  {
+      "id": "EDDCF82E-482C-49D1-836B-AD0284F2C5B0",
+      "name": "India TCS",
+      "publisher": "Microsoft",
+      "version": "24.3.21374.22624"
+  },
+  {
+      "id": "EAE5779E-7797-4C4C-977E-7516652B7A65",
+      "name": "India TDS",
+      "publisher": "Microsoft",
+      "version": "24.3.21374.22257"
+  },
+  {
+      "id": "2dc39818-e0f0-42b6-99eb-ba29dc5f4102",
+      "name": "India Gate Entry",
+      "publisher": "Microsoft",
+      "version": "1.0.0.0"
+  },
+  {
+      "id": "f1d9b696-156b-4251-b542-34e549fa80e9",
+      "name": "India Voucher Interface",
+      "publisher": "Microsoft",
+      "version": "1.0.0.0"
+  },
+  {
+      "id": "07729019-da51-4639-a987-3db38ccc62c7",
+      "name": "India Charge Group",
+      "publisher": "Microsoft",
+      "version": "1.0.0.0"
+  },
+  {
+      "id": "050f6146-bffd-40de-942c-d0dd510ec20f",
+      "name": "India Reports",
+      "publisher": "Microsoft",
+      "version": "1.0.0.0"
+  },
+  {
+      "id": "C1EAFB3F-E397-468E-BDB4-ECC5C317CA00",
+      "name": "Tax Engine",
+      "publisher": "Microsoft",
+      "version": "24.3.21374.21570"
+  }
+  ],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "26.0.0.0",
+  "idRanges": [
+    {
+      "from": 50000,
+      "to": 50500
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "15.0",
+  "features": [
+    "NoImplicitWith"
+  ]
+}
