@@ -24,7 +24,12 @@ report 50031 "KrizAgedAccountReceivable"
                     txtData[6] := Format("Due Date"); //Period End
                     txtData[7] := Format("Remaining Amount");
                     //  txtData[8] := Format("Original Amount");
-                    txtData[9] := Format(0);
+                    TdsLedgerEntry.Reset();
+                    TdsLedgerEntry.SetRange("Document No.", "Document No.");
+                    if TdsLedgerEntry.Find('-') then
+                        txtData[9] := Format(abs(TdsLedgerEntry."TDS Amount"))
+                    else
+                        txtData[9] := Format(0);
                     txtData[10] := "Cust. Ledger Entry"."Global Dimension 1 Code";
                     txtData[11] := CustomerRecord."Global Dimension 2 Code";
                     txtData[12] := "Currency Code";
@@ -45,8 +50,10 @@ report 50031 "KrizAgedAccountReceivable"
 
             trigger OnPreDataItem()
             begin
-                SetRange("Customer No.", CustomerNo);
+                if (CustomerNo <> '') then
+                    SetRange("Customer No.", CustomerNo);
                 SetFilter("Posting Date", '<=%1', DueDateFilter);
+                SetCurrentKey("Customer No.");
             end;
         }
 
@@ -96,6 +103,7 @@ report 50031 "KrizAgedAccountReceivable"
         CustomerNo: Code[20];
         DueDateFilter: Date;
         CustomerRecord: Record Customer;
+        TdsLedgerentry: Record "TDS Entry";
 
 
     procedure MakeExcelInfo()
@@ -124,8 +132,8 @@ report 50031 "KrizAgedAccountReceivable"
         TempExcelBuffer.AddColumn('Period End', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);         //txtData[6]
 
         TempExcelBuffer.AddColumn('Remaining Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);       //txtData[7]
-        TempExcelBuffer.AddColumn('Original Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);        //txtData[8]
-                                                                                                                                  // TempExcelBuffer.AddColumn('TDS Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);                //txtData[9]
+        TempExcelBuffer.AddColumn('TDS Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);        //txtData[8]
+                                                                                                                             // TempExcelBuffer.AddColumn('TDS Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);                //txtData[9]
 
         TempExcelBuffer.AddColumn('Dimension Code 1', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);               //txtData[10]
         TempExcelBuffer.AddColumn('Dimension Code 2', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);              //txtData[11]

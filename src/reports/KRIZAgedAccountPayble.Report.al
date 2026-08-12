@@ -13,6 +13,9 @@ report 50030 "KrizAgedAccountPayble"
             begin
                 CalcFields("Remaining Amount");
                 CalcFields("Original Amount");
+                if "Remaining Amount" = 0 then
+                    CurrReport.Skip();
+
                 vendorRecord.Reset();
                 vendorRecord.SetRange("No.", "Vendor Ledger Entry"."Vendor No.");
                 if vendorRecord.FindFirst() then begin
@@ -24,7 +27,12 @@ report 50030 "KrizAgedAccountPayble"
                     txtData[6] := Format("Due Date"); //Period End
                     txtData[7] := Format("Remaining Amount");
                     txtData[8] := Format("Original Amount");
-                    txtData[9] := Format(0);
+                    TdsLedgerEntry.Reset();
+                    TdsLedgerEntry.SetRange("Document No.", "Document No.");
+                    if TdsLedgerEntry.Find('-') then
+                        txtData[9] := Format(abs(TdsLedgerEntry."TDS Amount"))
+                    else
+                        txtData[9] := Format(0);
                     txtData[10] := "Vendor Ledger Entry"."Global Dimension 1 Code";
                     txtData[11] := vendorRecord."Global Dimension 2 Code";
                     txtData[12] := "Currency Code";
@@ -45,8 +53,10 @@ report 50030 "KrizAgedAccountPayble"
 
             trigger OnPreDataItem()
             begin
-                SetRange("Vendor No.", VendorNo);
+                if (VendorNo <> '') then
+                    SetRange("Vendor No.", VendorNo);
                 SetFilter("Posting Date", '<=%1', DueDateFilter);
+                SetCurrentKey("Vendor No.");
             end;
         }
 
@@ -96,6 +106,7 @@ report 50030 "KrizAgedAccountPayble"
         VendorNo: Code[20];
         DueDateFilter: Date;
         vendorRecord: Record Vendor;
+        TdsLedgerEntry: record "TDS Entry";
 
 
     procedure MakeExcelInfo()
