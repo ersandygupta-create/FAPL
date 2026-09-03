@@ -186,7 +186,7 @@ page 50002 "Customer Balance"
         CustLedgerEntry.SetRange("Customer No.", Rec."No.");
         if FromDate <> 0D then begin
             //CustLedgerEntry.SetFilter("Posting Date", '..%1', CalcDate('<-1D>', FromDate));
-            CustLedgerEntry.SetFilter("Posting Date", '..%1', FromDate);
+            CustLedgerEntry.SetFilter("Posting Date", '<%1', FromDate);
             if CustLedgerEntry.FindSet() then
                 repeat
                     CustLedgerEntry.CalcFields("Amount (LCY)");

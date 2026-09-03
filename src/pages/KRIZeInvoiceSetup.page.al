@@ -23,6 +23,11 @@ page 50156 "KRIZ e-Invoice Setup List 2"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the GSTIN number used for demo/testing purposes.';
                 }
+                field("Demo City"; Rec."Demo City")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the City number used for demo/testing purposes.';
+                }
                 field("Integration Enabled"; Rec."Integration Enabled")
                 {
                     ApplicationArea = All;
@@ -58,6 +63,7 @@ page 50156 "KRIZ e-Invoice Setup List 2"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the User ID used to authenticate API calls.';
                 }
+
                 field("Password"; Rec."Password")
                 {
                     ApplicationArea = All;

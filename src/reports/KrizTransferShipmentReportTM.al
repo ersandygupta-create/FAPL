@@ -18,6 +18,10 @@ report 50026 "Kriz GST-Transfer Shipment TM"           //Remarks = Some Fields a
             column(Copm_stateCode; Copm_stateCode)
             {
             }
+            column(QR_Code; "QR Code")
+            {
+
+            }
             column(ReceiverGSTIN; ReceiverGSTIN)
             {
             }
@@ -241,7 +245,7 @@ report 50026 "Kriz GST-Transfer Shipment TM"           //Remarks = Some Fields a
                         column(Numbertext; numberText[1])
                         {
                         }
-                        column(AmountToText; AmountToText[1] + AmountToText[2]) { }
+                        column(AmountToText; AmountToText[1] + ' ' + AmountToText[2]) { }
                         column(GSTAmtToText; GSTAmtToText[1] + GSTAmtToText[2]) { }
                         column(NoofCasesLine; NoofCasesLine)
                         { }
@@ -261,54 +265,60 @@ report 50026 "Kriz GST-Transfer Shipment TM"           //Remarks = Some Fields a
                             ILE.SetRange("Document Type", ILE."Document Type"::"Transfer Shipment");
                             ILE.SetRange("Document No.", "Transfer Shipment Line"."Document No.");
                             ILE.SetRange("Document Line No.", "Transfer Shipment Line"."Line No.");
-                            ILE.SetFilter("Lot No.", '<>%1', '');
+                            ile.SetRange("Item No.", "Transfer Shipment Line"."Item No.");
+
+                            //  ILE.SetFilter("Lot No.", '<>%1', '');
                             if ILE.FindSet() then
                                 repeat
                                     MfgDate := 0D;
                                     ExpiryDate := 0D;
                                     MRPLotInfo := 0;
+                                    BatchNo := '';
                                     if LotInfo.get(ILE."Item No.", ILE."Variant Code", ILE."Lot No.") then begin
                                         MfgDate := LotInfo."Kriz Manufacturing Date";
                                         ExpiryDate := LotInfo."Kriz Expiry Date";
                                         MRPLotInfo := LotInfo."Kriz MRP";
                                         BatchNo := LotInfo."Lot No.";
-                                        TransAmount := "Transfer Shipment Line"."Unit Price" * "Transfer Shipment Line".Quantity;
-                                        //For IGST Win349++
-                                        GSTBaseAmount := 0;
-                                        TotalGSTAMT := 0;
-                                        amt3 := 0;
-                                        TotalAmnt := 0;
-                                        GSTDetailLeger.RESET();
-                                        GSTDetailLeger.SETRANGE("Document No.", "Transfer Shipment Line"."Document No.");
-                                        GSTDetailLeger.SETRANGE("Document Line No.", "Transfer Shipment Line"."Line No.");
-                                        IF GSTDetailLeger.FINDFIRST() THEN
-                                            REPEAT
-                                                GSTDetailLeger."GST Component Code" := 'IGST';
-                                                CLEAR(rate3);
-                                                //CLEAR(amt3);
-                                                rate3 := GSTDetailLeger."GST %";
-                                                amt3 := GSTDetailLeger."GST Amount";
-                                                GSTBaseAmount := GSTDetailLeger."GST Base Amount"; //WIN541 added
-
-                                            UNTIL GSTDetailLeger.NEXT() = 0;
-                                        if (GSTBaseAmount = 0) then
-                                            GSTBaseAmount := "Transfer Shipment Line"."Unit Price" * "Transfer Shipment Line".Quantity;
-
-                                        //WIN541   TotalAmnt += "Transfer Shipment Line"."GST Base Amount" + ABS(amt3);
-                                        if ("Item No." <> '') then begin
-                                            TotalAmnt += Abs(GSTBaseAmount) + ABS(amt3); //WIN541 added 
-                                            TotalGSTAMT += abs(amt3);
-                                            Check.InitTextVariable();
-                                            Check.FormatNoText(AmountToText, TotalAmnt, '');
-                                            Check1.InitTextVariable();
-                                            Check1.FormatNoText(GSTAmtToText, TotalGSTAMT, '');
-                                        end;
-
-
-
 
                                     end;
                                 until ILe.Next() = 0;
+
+                            TransAmount := "Transfer Shipment Line"."Unit Price" * "Transfer Shipment Line".Quantity;
+                            //For IGST Win349++
+                            GSTBaseAmount := 0;
+                            //TotalGSTAMT := 0;
+                            amt3 := 0;
+                            //TotalAmnt := 0;
+                            GSTDetailLeger.RESET();
+                            GSTDetailLeger.SETRANGE("Document No.", "Transfer Shipment Line"."Document No.");
+                            GSTDetailLeger.SETRANGE("Document Line No.", "Transfer Shipment Line"."Line No.");
+                            IF GSTDetailLeger.FINDFIRST() THEN
+                                REPEAT
+                                    GSTDetailLeger."GST Component Code" := 'IGST';
+                                    CLEAR(rate3);
+                                    //CLEAR(amt3);
+                                    rate3 := GSTDetailLeger."GST %";
+                                    amt3 := GSTDetailLeger."GST Amount";
+                                    GSTBaseAmount := GSTDetailLeger."GST Base Amount"; //WIN541 added
+
+                                UNTIL GSTDetailLeger.NEXT() = 0;
+                            if (GSTBaseAmount = 0) then
+                                GSTBaseAmount := "Transfer Shipment Line"."Unit Price" * "Transfer Shipment Line".Quantity;
+
+                            //WIN541   TotalAmnt += "Transfer Shipment Line"."GST Base Amount" + ABS(amt3);
+
+                            GSTDetailLegerRec.RESET();
+                            GSTDetailLegerRec.SETRANGE("Document No.", "Transfer Shipment Line"."Document No.");
+
+                            GSTDetailLegerRec.CALCSUMS("GST Base Amount");
+                            GSTDetailLegerRec.CalcSums("GST Amount");
+
+                            TotalAmnt := abs(GSTDetailLegerRec."GST Base Amount") + abs(GSTDetailLegerRec."GST Amount");
+                            TotalGSTAMT := abs(GSTDetailLegerRec."GST Amount");
+                            Check.InitTextVariable();
+                            Check.FormatNoText(AmountToText, TotalAmnt, '');
+                            Check1.InitTextVariable();
+                            Check1.FormatNoText(GSTAmtToText, TotalGSTAMT, '');
                         end;
                     }
 
@@ -479,6 +489,8 @@ report 50026 "Kriz GST-Transfer Shipment TM"           //Remarks = Some Fields a
 
     var
         GSTDetailLeger: Record "Detailed GST Ledger Entry";
+        GSTDetailLegerRec: Record "Detailed GST Ledger Entry";
+
         LotInfo: Record "Lot No. Information";
         ILE: Record "Item Ledger Entry";
         companyInfo: Record "Company Information";

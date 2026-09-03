@@ -977,6 +977,7 @@ codeunit 50150 "KRIZ e-Invoice Integration"
             Address := BuyerAdd1;
             Address2 := BuyerAdd2;
             City := BuyerLoc;
+            AddressLocation := City;
             StateCode := BuyerStcd;
             PostCode := BuyerPin;
         END ELSE
@@ -1281,7 +1282,7 @@ codeunit 50150 "KRIZ e-Invoice Integration"
 
             UNTIL TransferShipmentLine.NEXT() = 0;
 
-            InvObject.Add('items', JsonArrayData);
+            InvObject.Add('item_list', JsonArrayData);
         END else IF IsPurchase then begin
 
             if DocumentNo <> '' then
@@ -2292,13 +2293,18 @@ codeunit 50150 "KRIZ e-Invoice Integration"
 
         DocumentNo := TransferShipmentHeader."No.";
         WriteJsonFileHeader();
-        ReadDocumentSellerDetails();
+        InvObject.Add('user_gstin', UserGSTIN);
+        InvObject.Add('data_source', 'erp');
         ReadTransferTransactionDetails(GSTCustType::Registered, '');
+
+        ReadDocumentHeaderDetails();
+
+        ReadDocumentSellerDetails();
+
         ReadTransferToDetails();
         ReadDocumentShippingDetails();
-        ReadDocumentHeaderDetails();
-        ReadDocumentTotalDetails();
         ReadDocumentItemList();
+        ReadDocumentTotalDetails();
 
         if EInvoiceSetup."E-Waybill by IRN Enabled" then
             ReadEWaybillDetails(false);

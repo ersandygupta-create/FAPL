@@ -8,6 +8,10 @@ pageextension 50006 KRIZCompanyInformationPageExt extends "Company Information"
             {
                 ApplicationArea = all;
             }
+            field(MSMEUANNo; rec.MSMEUANNo)
+            {
+                ApplicationArea = all;
+            }
         }
 
     }

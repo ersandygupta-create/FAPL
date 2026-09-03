@@ -266,9 +266,18 @@ report 50025 "Purchase Order Print TM"
                 if DimSetEntry1.Find('-') then
                     Brand := DimSetEntry1."Dimension Value Name";
 
-                FormatAdd.PurchHeaderBuyFrom(BuyFromAddr, PurchaseHeader);
+                // FormatAdd.PurchHeaderBuyFrom(BuyFromAddr, PurchaseHeader);
                 // if "Buy-from Vendor No." <> "Pay-to Vendor No." then
                 //     FormatAdd.PurchHeaderPayTo(VendAddr, PurchaseHeader);
+
+                BuyFromAddr[1] := PurchaseHeader."Buy-from Vendor Name";
+                buyfromaddr[2] := PurchaseHeader."Buy-from Vendor Name 2";
+                BuyFromAddr[3] := PurchaseHeader."Buy-from Contact";
+                BuyFromAddr[4] := PurchaseHeader."Buy-from Address";
+                BuyFromAddr[5] := PurchaseHeader."Buy-from Address 2";
+                BuyFromAddr[6] := PurchaseHeader."Buy-from City";
+                BuyFromAddr[7] := PurchaseHeader."Buy-from Post Code";
+                BuyFromAddr[8] := PurchaseHeader."Buy-from country/Region Code";
                 if "Payment Terms Code" = '' then
                     PaymentTerms.Init()
                 else begin

@@ -33,6 +33,12 @@ codeunit 50002 "Kriz Event Subscriber"
             SourceHeader."Kriz Reference Doc. Date";
         end;
     end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnBeforeInsertTransShptHeader', '', false, false)]
+    local procedure HandleOnBeforeInsertTransShptHeader(var TransShptHeader: Record "Transfer Shipment Header"; TransHeader: Record "Transfer Header")
+    begin
+        TransShptHeader."Kriz Shipping Id" := TransHeader."Kriz Shipping Id";
+    end;
     // [EventSubscriber(ObjectType::Codeunit, Codeunit::"Condition Mgmt.", 'OnBeforeCalcDecimal', '', false, false)]
     //     // [EventSubscriber(
     //     //     ObjectType::Codeunit,

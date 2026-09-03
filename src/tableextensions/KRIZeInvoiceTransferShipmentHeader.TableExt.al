@@ -50,6 +50,12 @@ tableextension 50154 "KRIZ Transfer Shipment Header" extends "Transfer Shipment 
             Caption = 'E-Waybill Valid Till';
             DataClassification = ToBeClassified;
         }
+        field(50108; "Kriz Shipping Id"; Text[20])
+        {
+            Caption = 'Kriz Shipping Id';
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 }

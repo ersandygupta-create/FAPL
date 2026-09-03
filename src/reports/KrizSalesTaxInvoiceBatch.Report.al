@@ -19,6 +19,10 @@ report 50007 "Kri Sales Tax Invoice Batch"
             column(No_SalesInvHdr; "No.")
             {
             }
+            column(MSME; CompanyInfo.MSMEUANNo)
+            {
+
+            }
             column(InvDiscountAmountCaption; InvDiscountAmountCaptionLbl)
             {
             }

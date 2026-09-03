@@ -13,6 +13,8 @@ report 50031 "KrizAgedAccountReceivable"
             begin
                 CalcFields("Remaining Amount");
                 CalcFields("Original Amount");
+                if "Remaining Amount" = 0 then
+                    CurrReport.Skip();
                 CustomerRecord.Reset();
                 CustomerRecord.SetRange("No.", "Cust. Ledger Entry"."Customer No.");
                 if CustomerRecord.FindFirst() then begin
