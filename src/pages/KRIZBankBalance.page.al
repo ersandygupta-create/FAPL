@@ -176,7 +176,7 @@ page 50016 "Bank Balance"
         BankLedgerEntry.SetRange("Bank Account No.", Rec."No.");
         if FromDate <> 0D then begin
             //BankLedgerEntry.SetFilter("Posting Date", '..%1', CalcDate('<-1D>', FromDate));
-            BankLedgerEntry.SetFilter("Posting Date", '..%1', FromDate);
+            BankLedgerEntry.SetFilter("Posting Date", '<%1', FromDate);
             if BankLedgerEntry.FindSet() then
                 repeat
                     //  BankLedgerEntry.CalcFields("Amount");

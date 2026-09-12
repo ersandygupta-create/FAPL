@@ -1,7 +1,7 @@
-report 50034 "Transfer Expense Register"
+report 50034 "Kriz Transfer Expense Register"
 {
     ProcessingOnly = true;
-    Caption = 'Transfer Expense Register';
+    Caption = 'Transfers Expense Register';
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
 
@@ -12,11 +12,9 @@ report 50034 "Transfer Expense Register"
         // -------------------------------------------------------------
         dataitem("Transfer Shipment Header"; "Transfer Shipment Header")
         {
-            // trigger OnPreDataItem()
-            // begin
-            //     if (FromDate <> 0D) and (ToDate <> 0D) then
-            //         SetFilter("Posting Date", '%1..%2', FromDate, ToDate);
-            // end;
+            RequestFilterFields = "No.", "Posting Date";
+
+
 
             dataitem("Transfer Shipment Line"; "Transfer Shipment Line")
             {
@@ -25,7 +23,6 @@ report 50034 "Transfer Expense Register"
 
                 trigger OnAfterGetRecord()
                 var
-                    ItemRec: Record Item;
                     LocationFrom: Record Location;
                     LocationTo: Record Location;
                     IGSTRate: Decimal;
@@ -36,18 +33,12 @@ report 50034 "Transfer Expense Register"
                     if "Transfer Shipment Line".Quantity = 0 then
                         CurrReport.Skip();
 
-                    // Fetch Item details
-                    if not ItemRec.Get("Transfer Shipment Line"."Item No.") then
-                        Clear(ItemRec);
-
-                    // Fetch Location details for GSTIN
                     if not LocationFrom.Get("Transfer Shipment Header"."Transfer-from Code") then
                         Clear(LocationFrom);
 
                     if not LocationTo.Get("Transfer Shipment Header"."Transfer-to Code") then
                         Clear(LocationTo);
 
-                    // Calculate Base Amount & Tax
                     TaxBaseAmt := "Transfer Shipment Line".Quantity * "Transfer Shipment Line"."Unit Price";
 
                     GetGSTDetailsFromDocument(
@@ -59,128 +50,128 @@ report 50034 "Transfer Expense Register"
 
                     NetAmt := TaxBaseAmt + IGSTAmt;
 
-                    // Build Data Array
                     Clear(txtData);
-                    // txtData[1] := 'Transfer Shipment';
-                    // txtData[2] := "Transfer Shipment Header"."No.";
-                    // txtData[3] := Format("Transfer Shipment Header"."Posting Date", 0, '<Day,2>-<Month,2>-<Year4>');
-                    // txtData[4] := "Transfer Shipment Header"."Transfer-from Code";
-                    // txtData[5] := "Transfer Shipment Header"."Transfer-to Code";
-                    // txtData[6] := LocationFrom."GST Registration No.";
-                    // txtData[7] := LocationTo."GST Registration No.";
-                    // txtData[8] := "Transfer Shipment Line"."Item No.";
-                    // txtData[9] := "Transfer Shipment Line".Description;
-                    // txtData[10] := "Transfer Shipment Line"."HSN/SAC Code";
-                    // txtData[11] := "Transfer Shipment Line"."Lot No.";
-                    // txtData[12] := Format("Transfer Shipment Line"."Expiration Date", 0, '<Day,2>-<Month,2>-<Year4>');
-                    // txtData[13] := "Transfer Shipment Line"."Unit of Measure Code";
-                    // txtData[14] := Format("Transfer Shipment Line".Quantity);
-                    // txtData[15] := Format("Transfer Shipment Line"."Unit Price");
-                    // txtData[16] := Format(TaxBaseAmt);
-                    // txtData[17] := Format(IGSTRate);
-                    // txtData[18] := Format(IGSTAmt);
-                    // txtData[19] := Format(NetAmt);
-                    // txtData[20] := "Transfer Shipment Header"."E-Way Bill No.";
-                    // txtData[21] := Format("Transfer Shipment Header"."E-Way Bill Date", 0, '<Day,2>-<Month,2>-<Year4>');
-                    // txtData[22] := 'Stock transfer';
-                    // txtData[23] := 'No';
-                    // txtData[24] := "Transfer Shipment Header"."IRN Hash";
-                    // txtData[25] := Format("Transfer Shipment Line"."MFG Date", 0, '<Day,2>-<Month,2>-<Year4>');
-                    // txtData[26] := "Transfer Shipment Header"."Shipment ID";
-                    // txtData[27] := "Transfer Shipment Header"."User ID";
+                    txtData[1] := 'Transfer Shipment';
+                    txtData[2] := "Transfer Shipment Header"."No.";
+                    txtData[3] := Format("Transfer Shipment Header"."Posting Date", 0, '<Day,2>-<Month,2>-<Year4>');
+                    txtData[4] := "Transfer Shipment Header"."Transfer-from Code";
+                    txtData[5] := "Transfer Shipment Header"."Transfer-to Code";
+                    txtData[6] := LocationFrom."GST Registration No.";
+                    txtData[7] := LocationTo."GST Registration No.";
+                    txtData[8] := "Transfer Shipment Line"."Item No.";
+                    txtData[9] := "Transfer Shipment Line".Description;
+                    txtData[10] := "Transfer Shipment Line"."HSN/SAC Code";
+                    txtData[11] := '';//"Transfer Shipment Line"."Lot No.";
+                    txtData[12] := '';//Format("Transfer Shipment Line"."Expiration Date", 0, '<Day,2>-<Month,2>-<Year4>');
+                    txtData[13] := "Transfer Shipment Line"."Unit of Measure Code";
+                    txtData[14] := Format("Transfer Shipment Line".Quantity, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[15] := Format("Transfer Shipment Line"."Unit Price", 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[16] := Format(TaxBaseAmt, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[17] := Format(IGSTRate, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[18] := Format(IGSTAmt, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[19] := Format(NetAmt, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[20] := "Transfer Shipment Header"."E-Way Bill No.";
+                    txtData[21] := '';//Format("Transfer Shipment Header"."E-Way Bill Date", 0, '<Day,2>-<Month,2>-<Year4>');
+                    txtData[22] := 'Stock transfer';
+                    txtData[23] := 'No';
+                    txtData[24] := ''; // IRN
+                    txtData[25] := ''; // MFG Date
+                    txtData[26] := ''; // Shipment Id
+                    txtData[27] := UserId();
 
                     MakeExcelDataBody();
+                end;
+
+                trigger OnPreDataItem()
+                begin
+                    if (FromDate <> 0D) and (ToDate <> 0D) then
+                        SetFilter("Shipment Date", '%1..%2', FromDate, ToDate);
+                end;
+            }
+        }
+        // -------------------------------------------------------------
+        // DATAITEM 1: TRANSFER RECEIPT
+        // -------------------------------------------------------------
+        dataitem("Transfer Receipt Header"; "Transfer Receipt Header")
+        {
+            RequestFilterFields = "No.", "Posting Date";
+
+
+
+            dataitem("Transfer Receipt Line"; "Transfer Receipt Line")
+            {
+                DataItemLink = "Document No." = FIELD("No.");
+                DataItemTableView = SORTING("Document No.", "Line No.");
+
+                trigger OnAfterGetRecord()
+                var
+                    LocationFrom: Record Location;
+                    LocationTo: Record Location;
+                    IGSTRate: Decimal;
+                    IGSTAmt: Decimal;
+                    TaxBaseAmt: Decimal;
+                    NetAmt: Decimal;
+                begin
+                    if "Transfer Receipt Line".Quantity = 0 then
+                        CurrReport.Skip();
+
+                    if not LocationFrom.Get("Transfer Receipt Header"."Transfer-from Code") then
+                        Clear(LocationFrom);
+
+                    if not LocationTo.Get("Transfer Receipt Header"."Transfer-to Code") then
+                        Clear(LocationTo);
+
+                    TaxBaseAmt := "Transfer Receipt Line".Quantity * "Transfer Receipt Line"."Unit Price";
+
+                    GetGSTDetailsFromDocument(
+                        "Transfer Receipt Line"."Document No.",
+                        "Transfer Receipt Line"."Line No.",
+                        IGSTRate,
+                        IGSTAmt
+                    );
+
+                    NetAmt := TaxBaseAmt + IGSTAmt;
+
+                    Clear(txtData);
+                    txtData[1] := 'Transfer Receipt';
+                    txtData[2] := "Transfer Receipt Header"."No.";
+                    txtData[3] := Format("Transfer Receipt Header"."Posting Date", 0, '<Day,2>-<Month,2>-<Year4>');
+                    txtData[4] := "Transfer Receipt Header"."Transfer-from Code";
+                    txtData[5] := "Transfer Receipt Header"."Transfer-to Code";
+                    txtData[6] := LocationFrom."GST Registration No.";
+                    txtData[7] := LocationTo."GST Registration No.";
+                    txtData[8] := "Transfer Receipt Line"."Item No.";
+                    txtData[9] := "Transfer Receipt Line".Description;
+                    txtData[10] := "Transfer Receipt Line"."HSN/SAC Code";
+                    txtData[11] := '';//"Transfer Receipt Line"."Lot No.";
+                    txtData[12] := '';//Format("Transfer Receipt Line"."Expiration Date", 0, '<Day,2>-<Month,2>-<Year4>');
+                    txtData[13] := "Transfer Receipt Line"."Unit of Measure Code";
+                    txtData[14] := Format("Transfer Receipt Line".Quantity, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[15] := Format("Transfer Receipt Line"."Unit Price", 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[16] := Format(TaxBaseAmt, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[17] := Format(IGSTRate, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[18] := Format(IGSTAmt, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[19] := Format(NetAmt, 0, '<Precision,2:2><Standard Format,0>');
+                    txtData[20] := '';//"Transfer Receipt Header"."E-Way Bill No.";
+                    txtData[21] := '';//Format("Transfer Receipt Header"."E-Way Bill Date", 0, '<Day,2>-<Month,2>-<Year4>');
+                    txtData[22] := 'Stock transfer';
+                    txtData[23] := 'No';
+                    txtData[24] := ''; // IRN
+                    txtData[25] := ''; // MFG Date
+                    txtData[26] := ''; // Receipt Id
+                    txtData[27] := UserId();
+
+                    MakeExcelDataBody();
+                end;
+
+                trigger OnPreDataItem()
+                begin
+                    if (FromDate <> 0D) and (ToDate <> 0D) then
+                        SetFilter("Receipt Date", '%1..%2', FromDate, ToDate);
                 end;
             }
         }
 
-        // -------------------------------------------------------------
-        // DATAITEM 2: TRANSFER RECEIPT
-        // -------------------------------------------------------------
-        //     dataitem("Transfer Receipt Header"; "Transfer Receipt Header")
-        //     {
-        //         trigger OnPreDataItem()
-        //         begin
-        //             if (FromDate <> 0D) and (ToDate <> 0D) then
-        //                 SetFilter("Posting Date", '%1..%2', FromDate, ToDate);
-        //         end;
-
-        //         dataitem("Transfer Receipt Line"; "Transfer Receipt Line")
-        //         {
-        //             DataItemLink = "Document No." = FIELD("No.");
-        //             DataItemTableView = SORTING("Document No.", "Line No.");
-
-        //             trigger OnAfterGetRecord()
-        //             var
-        //                 ItemRec: Record Item;
-        //                 LocationFrom: Record Location;
-        //                 LocationTo: Record Location;
-        //                 IGSTRate: Decimal;
-        //                 IGSTAmt: Decimal;
-        //                 TaxBaseAmt: Decimal;
-        //                 NetAmt: Decimal;
-        //             begin
-        //                 if "Transfer Receipt Line".Quantity = 0 then
-        //                     CurrReport.Skip();
-
-        //                 // Fetch Item details
-        //                 if not ItemRec.Get("Transfer Receipt Line"."Item No.") then
-        //                     Clear(ItemRec);
-
-        //                 // Fetch Location details for GSTIN
-        //                 if not LocationFrom.Get("Transfer Receipt Header"."Transfer-from Code") then
-        //                     Clear(LocationFrom);
-
-        //                 if not LocationTo.Get("Transfer Receipt Header"."Transfer-to Code") then
-        //                     Clear(LocationTo);
-
-        //                 // Calculate Base Amount & Tax
-        //                 TaxBaseAmt := "Transfer Receipt Line".Quantity * "Transfer Receipt Line"."Unit Price";
-
-        //                 GetGSTDetailsFromDocument(
-        //                     "Transfer Receipt Line"."Document No.", 
-        //                     "Transfer Receipt Line"."Line No.", 
-        //                     IGSTRate, 
-        //                     IGSTAmt
-        //                 );
-
-        //                 NetAmt := TaxBaseAmt + IGSTAmt;
-
-        //                 // Build Data Array
-        //                 Clear(txtData);
-        //                 txtData[1] := 'Transfer Receipt';
-        //                 txtData[2] := "Transfer Receipt Header"."No.";
-        //                 txtData[3] := Format("Transfer Receipt Header"."Posting Date", 0, '<Day,2>-<Month,2>-<Year4>');
-        //                 txtData[4] := "Transfer Receipt Header"."Transfer-from Code";
-        //                 txtData[5] := "Transfer Receipt Header"."Transfer-to Code";
-        //                 txtData[6] := LocationFrom."GST Registration No.";
-        //                 txtData[7] := LocationTo."GST Registration No.";
-        //                 txtData[8] := "Transfer Receipt Line"."Item No.";
-        //                 txtData[9] := "Transfer Receipt Line".Description;
-        //                 txtData[10] := "Transfer Receipt Line"."HSN/SAC Code";
-        //                 txtData[11] := "Transfer Receipt Line"."Lot No.";
-        //                 txtData[12] := Format("Transfer Receipt Line"."Expiration Date", 0, '<Day,2>-<Month,2>-<Year4>');
-        //                 txtData[13] := "Transfer Receipt Line"."Unit of Measure Code";
-        //                 txtData[14] := Format("Transfer Receipt Line".Quantity);
-        //                 txtData[15] := Format("Transfer Receipt Line"."Unit Price");
-        //                 txtData[16] := Format(TaxBaseAmt);
-        //                 txtData[17] := Format(IGSTRate);
-        //                 txtData[18] := Format(IGSTAmt);
-        //                 txtData[19] := Format(NetAmt);
-        //                 txtData[20] := "Transfer Receipt Header"."E-Way Bill No.";
-        //                 txtData[21] := Format("Transfer Receipt Header"."E-Way Bill Date", 0, '<Day,2>-<Month,2>-<Year4>');
-        //                 txtData[22] := 'Transfer order';
-        //                 txtData[23] := 'No';
-        //                 txtData[24] := "Transfer Receipt Header"."IRN Hash";
-        //                 txtData[25] := Format("Transfer Receipt Line"."MFG Date", 0, '<Day,2>-<Month,2>-<Year4>');
-        //                 txtData[26] := "Transfer Receipt Header"."Shipment ID";
-        //                 txtData[27] := "Transfer Receipt Header"."User ID";
-
-        //                 MakeExcelDataBody();
-        //             end;
-        //         }
-        //     }
-        // }
     }
 
     requestpage
@@ -191,6 +182,7 @@ report 50034 "Transfer Expense Register"
             {
                 group(Option)
                 {
+                    Caption = 'Date Filter Options';
                     field(FromDate; FromDate)
                     {
                         Caption = 'From Date Filter';
@@ -224,7 +216,7 @@ report 50034 "Transfer Expense Register"
 
     procedure GetGSTDetailsFromDocument(
         DocNo: Code[20];
-        LineNo: Integer;
+        DocLineNo: Integer;
         var IGSTRate: Decimal;
         var IGSTAmt: Decimal)
     var
@@ -235,7 +227,9 @@ report 50034 "Transfer Expense Register"
 
         DetailedGSTLedgerEntry.Reset();
         DetailedGSTLedgerEntry.SetRange("Document No.", DocNo);
-        DetailedGSTLedgerEntry.SetRange("Document Line No.", LineNo);
+
+        if DocLineNo <> 0 then
+            DetailedGSTLedgerEntry.SetRange("Document Line No.", DocLineNo);
 
         if DetailedGSTLedgerEntry.FindSet() then
             repeat
@@ -269,12 +263,12 @@ report 50034 "Transfer Expense Register"
         TempExcelBuffer.AddColumn('Lot number', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn('Exp Date', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn('Unit Of Measure', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
-        TempExcelBuffer.AddColumn('Qty', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
-        TempExcelBuffer.AddColumn('Unit Price', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
-        TempExcelBuffer.AddColumn('Tax Base Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
-        TempExcelBuffer.AddColumn('Tax %', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
-        TempExcelBuffer.AddColumn('IGST Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
-        TempExcelBuffer.AddColumn('Net Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
+        TempExcelBuffer.AddColumn('Qty', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn('Unit Price', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn('Tax Base Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn('Tax %', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn('IGST Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn('Net Amount', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn('EWay Bill No.', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn('EWay Bill Date', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn('Transfer Type', FALSE, '', TRUE, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
@@ -290,17 +284,13 @@ report 50034 "Transfer Expense Register"
         i: Integer;
     begin
         TempExcelBuffer.NewRow();
-        for i := 1 to 27 do begin
-            if i in [14, 15, 16, 17, 18, 19] then
-                TempExcelBuffer.AddColumn(txtData[i], FALSE, '', FALSE, FALSE, FALSE, '#,##0.00', TempExcelBuffer."Cell Type"::Number)
-            else
-                TempExcelBuffer.AddColumn(txtData[i], FALSE, '', FALSE, FALSE, FALSE, '', TempExcelBuffer."Cell Type"::Text);
-        end;
+        for i := 1 to 27 do
+            TempExcelBuffer.AddColumn(txtData[i], FALSE, '', FALSE, FALSE, FALSE, '', TempExcelBuffer."Cell Type"::Text);
     end;
 
     procedure CreateExcelbook()
     var
-        TxtRptLbl: Label 'Transfer Expense Register';
+        TxtRptLbl: Label 'Transfers Expense Register';
     begin
         TempExcelBuffer.CreateNewBook(TxtRptLbl);
         TempExcelBuffer.WriteSheet(TxtRptLbl, CompanyName, UserId);

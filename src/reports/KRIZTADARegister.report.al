@@ -21,6 +21,7 @@ report 50032 "TADA Register"
 
                 trigger OnAfterGetRecord()
                 begin
+                    TotalAmount := 0;
                     txtData[17] := Format(KRIZTADALinePost.ExpenseDate);
                     txtData[18] := KRIZTADALinePost.FromCity;
                     txtData[19] := KRIZTADALinePost.ToCity;
@@ -202,6 +203,7 @@ report 50032 "TADA Register"
         Crop: Code[20];
 
         txtData: array[255] of Text[200];
+        TotalAmount: Decimal;
         PrintToExcel: Boolean;
         CGSTRate: Decimal;
         CGSTAmt: Decimal;

@@ -4,8 +4,9 @@ page 50182 "KRIZTADAParameter"
     SourceTable = KrizTADAParameter;
     Caption = 'Tada Parameter';
     UsageCategory = Administration;
-    DeleteAllowed = false;
+    DeleteAllowed = true;
     //InsertAllowed = false;
+
     PageType = Card;
 
     layout
